@@ -1,0 +1,10 @@
+const express = require('express');
+
+const users = require('./users/routes');
+const lists = require('./lists/routes');
+
+const router = express.Router();
+
+router.use('/users', users);
+
+module.exports = router;
