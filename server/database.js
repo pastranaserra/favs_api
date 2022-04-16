@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
 
+// db connection and disconnection
 exports.connect = ({
   protocol = 'mongodb',
   url = '',
@@ -23,6 +24,7 @@ exports.disconnect = () => {
   });
 };
 
+// db connection events
 mongoose.connection.on('open', (err) => {
   console.log('Database connected');
 });

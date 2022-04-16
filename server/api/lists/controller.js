@@ -1,19 +1,85 @@
-exports.list = (req, res) => {
-  res.send("These are the user's lists");
+const { Model } = require('./model');
+
+exports.list = async (req, res, next) => {
+  try {
+    const doc = await Model.find({}).exec();
+
+    res.json({
+      data: doc,
+    });
+  } catch (err) {
+    next(err);
+  }
 };
 
-exports.create = (req, res) => {
-  res.send('Create a user list here');
+exports.create = async (req, res, next) => {
+  const { body = {} } = req;
+  try {
+    const model = new Model(body);
+    const doc = await model.save();
+
+    res.status(201);
+    res.json({
+      data: doc,
+    });
+  } catch (err) {
+    next(err);
+  }
 };
 
-exports.read = (req, res) => {
-  res.send('Reading user list...');
+exports.id = async (req, res, next) => {
+  const { params = {} } = req;
+  const { listId } = params; // listId named as same as the route /:listId in lists/routes
+
+  try {
+    const doc = await Model.findById(listId);
+
+    if (!doc) {
+      next({
+        statusCode: 404,
+        message: 'List not found',
+      });
+    } else {
+      req.doc = doc;
+      next();
+    }
+  } catch (err) {
+    next(err);
+  }
 };
 
-exports.modify = (req, res) => {
-  res.send('Modify the list here');
+exports.read = async (req, res, next) => {
+  const { doc = {} } = req;
+
+  res.json({
+    data: doc,
+  });
 };
 
-exports.delete = (req, res) => {
-  res.send('Deleting list');
+exports.modify = async (req, res) => {
+  const { doc = {}, body = {} } = req;
+
+  Object.assign(doc, body);
+
+  try {
+    const updatedDoc = await doc.save();
+    res.json({
+      data: updatedDoc,
+    });
+  } catch (err) {
+    next(err);
+  }
+};
+
+exports.delete = async (req, res, next) => {
+  const { doc = {} } = req;
+
+  try {
+    const deleted = await doc.remove();
+    res.json({
+      data: deleted,
+    });
+  } catch (err) {
+    next(err);
+  }
 };

@@ -5,6 +5,9 @@ const router = express.Router();
 const controller = require('./controller');
 
 router.route('/').get(controller.list).post(controller.create);
+
+router.param('listId', controller.id); // middleware to evaluate if listId exists when req.params
+
 router
   .route('/:listId')
   .get(controller.read)
