@@ -14,8 +14,16 @@ const fields = {
   },
 };
 
-const list = new Schema(fields, {
+const references = {
+  userId: {
+    type: mongoose.ObjectId,
+    ref: 'user',
+    required: true,
+  },
+};
+
+const list = new Schema(Object.assign(fields, references), {
   timestamps: true,
 });
 
-module.exports = { Model: mongoose.model('list', list), fields };
+module.exports = { Model: mongoose.model('list', list), fields, references };

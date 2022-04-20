@@ -1,4 +1,6 @@
-const { pagination } = require('../config');
+const config = require('../config');
+
+const { pagination } = config;
 
 function paginationParams(
   limit = pagination.limit,

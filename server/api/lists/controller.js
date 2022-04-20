@@ -1,14 +1,16 @@
-const { Model } = require('./model');
+const { Model, fields, references } = require('./model');
 
 const { paginationParams } = require('../../utils');
+const referencesNames = Object.getOwnPropertyNames(references); // returns array with the references names
 
 exports.list = async (req, res, next) => {
   const { query } = req;
   const { limit, page, skip } = paginationParams(query);
+  const populate = referencesNames.join(' ');
 
   try {
     const data = await Promise.all([
-      Model.find({}).skip(skip).limit(limit).exec(),
+      Model.find({}).skip(skip).limit(limit).populate(populate).exec(),
       Model.countDocuments(),
     ]);
 

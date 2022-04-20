@@ -6,6 +6,8 @@ const controller = require('./controller');
 
 router.route('/').get(controller.list).post(controller.create);
 
+router.param('userID', controller.id);
+
 router.use('/:userId/lists', listsRoutes);
 
 module.exports = router;
