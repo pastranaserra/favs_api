@@ -6,12 +6,12 @@ const controller = require('./controller');
 
 router.route('/').get(controller.list).post(controller.create);
 
-router.param('listId', controller.id); // middleware to evaluate if listId exists when req.params
+router.param('Id', controller.id);
 
 router
-  .route('/:listId')
+  .route('/:Id')
   .get(controller.read)
-  .put(controller.modify)
+  .put(controller.update)
   .delete(controller.delete);
 
 module.exports = router;

@@ -1,31 +1,10 @@
-const { Model, fields, references } = require('./model');
-
-const { paginationParams } = require('../../utils');
-const referencesNames = Object.getOwnPropertyNames(references); // returns array with the references names
+const { Model } = require('./model');
 
 exports.list = async (req, res, next) => {
-  const { query } = req;
-  const { limit, page, skip } = paginationParams(query);
-  const populate = referencesNames.join(' ');
-
   try {
-    const data = await Promise.all([
-      Model.find({}).skip(skip).limit(limit).populate(populate).exec(),
-      Model.countDocuments(),
-    ]);
-
-    const [doc, countDocs] = data;
-
-    const pages = Math.ceil(countDocs / limit);
-
+    const doc = await Model.find({}).exec();
     res.json({
       data: doc,
-      meta: {
-        page,
-        skip,
-        limit,
-        pages,
-      },
     });
   } catch (err) {
     next(err);
@@ -34,12 +13,13 @@ exports.list = async (req, res, next) => {
 
 exports.create = async (req, res, next) => {
   const { body = {} } = req;
+
   try {
     const model = new Model(body);
     const doc = await model.save();
 
-    res.status(201);
     res.json({
+      statusCode: 201,
       data: doc,
     });
   } catch (err) {
@@ -49,10 +29,10 @@ exports.create = async (req, res, next) => {
 
 exports.id = async (req, res, next) => {
   const { params = {} } = req;
-  const { listId } = params; // listId named as same as the route /:listId in lists/routes
+  const { Id } = params; // Id named as same as the route /:Id in /routes
 
   try {
-    const doc = await Model.findById(listId);
+    const doc = await Model.findById(Id);
 
     if (!doc) {
       next({
@@ -76,7 +56,7 @@ exports.read = async (req, res, next) => {
   });
 };
 
-exports.modify = async (req, res) => {
+exports.update = async (req, res) => {
   const { doc = {}, body = {} } = req;
 
   Object.assign(doc, body);
