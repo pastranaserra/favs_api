@@ -14,4 +14,20 @@ function paginationParams(
   };
 }
 
-module.exports = { paginationParams };
+function populateToObject(populateNames) {
+  const virtualNames = Object.getOwnPropertyNames(virtuals);
+  return populateNames.map((item) => {
+    let options = {};
+    if (virtualNames.includes(item)) {
+      options = {
+        limit: populate.virtuals.limit,
+      };
+    }
+    return {
+      path: item,
+      options,
+    };
+  });
+}
+
+module.exports = { paginationParams, populateToObject };

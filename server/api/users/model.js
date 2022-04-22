@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
-const { hash, compare, hashSync } = require('bcryptjs');
+const { hash, compare } = require('bcryptjs');
+const { isEmail } = require('validator');
 
 const { Schema } = mongoose;
 
@@ -15,6 +16,16 @@ const fields = {
   email: {
     type: String,
     required: true,
+    unique: true,
+    lowercase: true,
+    validate: {
+      validator(value) {
+        return isEmail(value);
+      },
+      message(props) {
+        return `${props.value} is not a valid email`;
+      },
+    },
   },
   password: {
     type: String,
@@ -63,7 +74,7 @@ user.pre('save', async function (next) {
 });
 
 user.methods.verifyPassword = function (value) {
-  //compares the password given by the user with the one in the data
+  //compares the password given by the user with the one saved in the data
   return compare(value, this.password);
 };
 

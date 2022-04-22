@@ -1,8 +1,10 @@
 const { Model } = require('./model');
+const referencesNames = [...Object.getOwnPropertyNames(references)];
 
 exports.list = async (req, res, next) => {
+  const populate = Object.populateToObject(referencesNames);
   try {
-    const doc = await Model.find({}).exec();
+    const doc = await Model.find({}).populate(populate).exec();
     res.json({
       data: doc,
     });
