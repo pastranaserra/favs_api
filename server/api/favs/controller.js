@@ -1,8 +1,8 @@
-const { Model } = require('./model');
-const referencesNames = [...Object.getOwnPropertyNames(references)];
+const { Model, references } = require('./model');
+const referencesNames = Object.getOwnPropertyNames(references); //brings the userId and other references from the model
 
 exports.list = async (req, res, next) => {
-  const populate = Object.populateToObject(referencesNames);
+  const populate = referencesNames.join(' ');
   try {
     const doc = await Model.find({}).populate(populate).exec();
     res.json({
@@ -32,9 +32,10 @@ exports.create = async (req, res, next) => {
 exports.id = async (req, res, next) => {
   const { params = {} } = req;
   const { Id } = params; // Id named as same as the route /:Id in /routes
+  const populate = referencesNames.join(' ');
 
   try {
-    const doc = await Model.findById(Id);
+    const doc = await Model.findById(Id).populate(populate);
 
     if (!doc) {
       next({

@@ -16,6 +16,7 @@ const fields = {
 };
 
 const references = {
+  // creates references from other models
   userId: {
     type: mongoose.ObjectId,
     ref: 'user',
@@ -23,7 +24,7 @@ const references = {
   },
 };
 
-const list = new Schema(fields, {
+const list = new Schema(Object.assign(fields, references), {
   timestamps: true,
 });
 

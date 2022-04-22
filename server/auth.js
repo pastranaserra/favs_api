@@ -33,10 +33,27 @@ const isAuthenticated = async (req, res, next) => {
         statusCode: 401,
       });
     } else {
-      req.decoded = decoded; //monkey patch
+      req.decoded = decoded; //monkey patch -> create a new property
       next();
     }
   });
 };
 
-module.exports = { signToken, isAuthenticated };
+const own = (req, res, next) => {
+  const { decoded = {}, doc = {} } = req;
+  const { id: authId } = decoded;
+  const {
+    userId: { id: userId },
+  } = doc;
+
+  if (authId === userId) {
+    next();
+  } else {
+    next({
+      statusCode: 403,
+      message: 'Forbidden',
+    });
+  }
+};
+
+module.exports = { signToken, isAuthenticated, own };
