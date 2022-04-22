@@ -6,7 +6,7 @@ const { own } = require('../../auth');
 
 const controller = require('./controller');
 
-router.route('/').get(controller.list).post(own, sanitizers, controller.create);
+router.route('/').get(controller.list).post(sanitizers, controller.create);
 
 router.param('Id', controller.id);
 
