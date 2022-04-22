@@ -2,10 +2,12 @@ const express = require('express');
 
 const app = express();
 const api = require('./api');
+const auth = require('./authentication/routes');
 
 app.use(express.json());
 
 app.use('/api', api);
+app.use('/auth', auth);
 
 app.use((req, res, next) => {
   next({

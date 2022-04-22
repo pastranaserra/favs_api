@@ -4,8 +4,8 @@ const router = express.Router();
 
 const controller = require('./controller');
 
+router.route('/').get(controller.list);
 router.route('/signup').post(controller.signup);
-router.route('/signin').post(controller.signin);
 
 router.param('userId', controller.id);
 

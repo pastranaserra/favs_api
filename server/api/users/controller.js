@@ -1,31 +1,5 @@
 const { Model } = require('./model');
-
-exports.signin = async (req, res, next) => {
-  const { body = {} } = req;
-  const { email = '', password = '' } = body;
-
-  try {
-    const user = await Model.findOne({ email: email }).exec();
-    if (!user) {
-      return next({
-        statusCode: 401,
-        message: 'You are not authorized',
-      });
-    }
-    const verified = await user.verifyPassword(password);
-    if (!verified) {
-      return next({
-        statusCode: 401,
-        message: 'You are not authorized',
-      });
-    }
-    res.json({
-      data: user,
-    });
-  } catch (error) {
-    next(error);
-  }
-};
+const { signToken } = require('../../auth');
 
 exports.signup = async (req, res, next) => {
   const { body = {} } = req;
@@ -34,9 +8,15 @@ exports.signup = async (req, res, next) => {
     const model = new Model(body);
     const doc = await model.save();
 
+    const { _id: id } = doc;
+    const token = signToken({ id });
+
     res.json({
       statusCode: 201,
       data: doc,
+      meta: {
+        token,
+      },
     });
   } catch (err) {
     next(err);
@@ -86,6 +66,17 @@ exports.update = async (req, res) => {
     const updatedDoc = await doc.save();
     res.json({
       data: updatedDoc,
+    });
+  } catch (err) {
+    next(err);
+  }
+};
+
+exports.list = async (req, res, next) => {
+  try {
+    const doc = await Model.find({}).exec();
+    res.json({
+      data: doc,
     });
   } catch (err) {
     next(err);
