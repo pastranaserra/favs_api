@@ -23,7 +23,6 @@ const user = getUser();
 const fav = getFav();
 let token;
 let favId;
-let userId;
 
 describe('Users resources', () => {
   test('Users can signup', async () => {
@@ -39,7 +38,6 @@ describe('Users resources', () => {
     const res = await app.post('/auth/local/login').send(logInfo);
 
     token = res.body.meta.token;
-    userId = res.body.data.id;
 
     expect(res.statusCode).toBe(200);
     expect(res.body.data.name).toBe(user.name);
@@ -58,7 +56,6 @@ describe('Data manipulation', () => {
   });
 
   test('Users can create a favs list', async () => {
-    fav.userId = userId;
     const res = await app
       .post('/api/favs')
       .set('Authorization', `Bearer ${token}`)
@@ -69,7 +66,6 @@ describe('Data manipulation', () => {
   });
 
   test('Users can update a single favs list', async () => {
-    fav.userId = userId;
     const res = await app
       .put(`/api/favs/${favId}`)
       .set('Authorization', `Bearer ${token}`)

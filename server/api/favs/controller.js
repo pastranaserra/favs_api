@@ -14,7 +14,11 @@ exports.list = async (req, res, next) => {
 };
 
 exports.create = async (req, res, next) => {
-  const { body = {} } = req;
+  const {
+    body = {},
+    decoded: { id },
+  } = req;
+  body.userId = id; //monkey patch for the userId reference required
 
   try {
     const model = new Model(body);
