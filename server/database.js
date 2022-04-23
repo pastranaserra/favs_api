@@ -20,7 +20,7 @@ exports.connect = ({
 
 exports.disconnect = () => {
   mongoose.connection.close(() => {
-    console.log('Database disconnected');
+    //console.log('Database disconnected');
   });
 };
 

@@ -13,10 +13,10 @@ beforeAll(() => {
   });
 });
 
-// afterAll(() => {
-//   //disconnet database
-//   database.disconnect();
-// });
+afterAll(() => {
+  //disconnet database
+  database.disconnect();
+});
 
 const app = request(server);
 const user = getUser();
@@ -30,6 +30,7 @@ describe('Users resources', () => {
     const res = await app.post('/api/users/signup').send(user);
 
     expect(res.statusCode).toBe(200);
+    expect(res.body.data.email).toBe(user.email);
   });
 
   test('Users can login', async () => {
@@ -39,7 +40,9 @@ describe('Users resources', () => {
 
     token = res.body.meta.token;
     userId = res.body.data.id;
+
     expect(res.statusCode).toBe(200);
+    expect(res.body.data.name).toBe(user.name);
   });
 });
 
@@ -61,10 +64,12 @@ describe('Data manipulation', () => {
       .set('Authorization', `Bearer ${token}`)
       .send(fav);
 
+    favId = res.body.data._id;
     expect(res.statusCode).toBe(200);
   });
 
   test('Users can update a single favs list', async () => {
+    fav.userId = userId;
     const res = await app
       .put(`/api/favs/${favId}`)
       .set('Authorization', `Bearer ${token}`)
@@ -73,7 +78,7 @@ describe('Data manipulation', () => {
     expect(res.statusCode).toBe(200);
   });
 
-  test('Users can get a single favs list', async () => {
+  test('Users can read a single favs list', async () => {
     const res = await app
       .get(`/api/favs/${favId}`)
       .set('Authorization', `Bearer ${token}`);

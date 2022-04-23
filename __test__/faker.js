@@ -6,7 +6,7 @@ const getUser = function (overrides = {}) {
   const user = {
     name,
     lastname,
-    email: faker.internet.email(name, lastname),
+    email: faker.internet.email(name, lastname).toLowerCase(),
     password: faker.internet.password(4),
   };
 
